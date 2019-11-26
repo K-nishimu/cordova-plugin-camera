@@ -512,6 +512,9 @@ static NSString* toBase64(NSData* data) {
 
 - (CDVPluginResult*)resultForVideo:(NSDictionary*)info
 {
+    //for iOS 13.0 or higher
+    if ( [[UIDevice currentDevice].systemVersion floatValue] >= 13.0) {
+
   NSString* moviePath = [[info objectForKey:UIImagePickerControllerMediaURL] path];
 
   NSArray* spliteArray = [moviePath componentsSeparatedByString: @"/"];
@@ -523,6 +526,13 @@ static NSString* toBase64(NSData* data) {
   [fileManager copyItemAtPath:moviePath toPath:filePath error:&error];
 
   return [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:filePath];
+  //less than iOS13.0
+  } else {
+        
+        NSString* moviePath = [[info objectForKey:UIImagePickerControllerMediaURL] absoluteString];
+        return [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:moviePath];
+        
+    }
 }
 
 - (void)imagePickerController:(UIImagePickerController*)picker didFinishPickingMediaWithInfo:(NSDictionary*)info
